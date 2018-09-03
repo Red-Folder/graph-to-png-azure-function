@@ -71,7 +71,7 @@ module.exports = async function (context, req) {
         context.log("Return image");
 
         context.res = {
-            status: 200,
+            status: 201,
             body: new  Uint8Array(buffer),
             isRaw: true,
             headers: {
