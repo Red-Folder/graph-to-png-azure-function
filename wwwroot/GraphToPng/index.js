@@ -17,9 +17,11 @@ module.exports = async function (context, req) {
         var chartConfig = req.body;
 
         context.log('Creating chartNode');
-        var chartNode = new ChartjsNode(600, 600);
-        context.log('Drawing the chart');
+        var width = (req.body.options && req.body.options.width) ? req.body.options.width : 200;
+        var height = (req.body.options && req.body.options.height) ? req.body.options.height : 200;
+        var chartNode = new ChartjsNode(width, height);
 
+        context.log('Drawing the chart');
         return chartNode.drawChart(chartConfig)
             .then(() => {
                 context.log("Chart created, getting image buffer");
