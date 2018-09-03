@@ -44,6 +44,16 @@ const chartConfig = {
     }
 };
 
+const htmlFormatError = err => {
+    return '<html>' +
+                '<body>' +
+                    '<h1>An error has occurred</h1>' +
+                    '<h2>Error Text</h2>' +
+                    err +
+                '</body>' + 
+            '</html>';
+}
+
 module.exports = async function (context, req) {
     context.log('JavaScript HTTP trigger function processed a request.');
 
@@ -54,31 +64,12 @@ module.exports = async function (context, req) {
     return chartNode.drawChart(chartConfig)
     .then(() => {
         context.log("Chart created, getting image buffer");
-        // chart is created
-     
-        // get image as png buffer
+
         return chartNode.getImageBuffer('image/png');
     })
-    //.then(buffer => {
-    //    context.log("Converting to image stream");
-    //    Array.isArray(buffer) // => true
-        // as a stream
-    //    return chartNode.getImageStream('image/png');
-    //})
     .then(buffer => {
-    //.then(streamResult => {
         context.log("Return image");
 
-        // using the length property you can do things like
-        // directly upload the image to s3 by using the
-        // stream and length properties
-        //streamResult.stream // => Stream object
-        //streamResult.length // => Integer length of stream
-        
-        // write to a file
-        //chartNode.writeImageToFile('image/png', './testimage.png');
-        
-        //context.res.setHeader("Content-Type", "image/png");
         context.res = {
             status: 200,
             body: new  Uint8Array(buffer),
@@ -87,21 +78,13 @@ module.exports = async function (context, req) {
                 "Content-Type": "image/png"
             }
         };
-
-        //if (req.query.name || (req.body && req.body.name)) {
-        //    context.res = {
-        //        // status: 200, /* Defaults to 200 */
-        //        body: "Hello " + (req.query.name || req.body.name)
-        //    };
-        //}
-        //else {
-        //    context.res = {
-        //        status: 400,
-        //        body: "Please pass a name on the query string or in the request body"
-        //    };
-        //}
     })
     .catch(err => {
         context.log("[ERROR] - " + err);
+        context.res = {
+            status: 500,
+            body: htmlFormatError(err),
+            isRaw: false
+        };
     });
 };
