@@ -12,3 +12,6 @@ RUN apt-get -y install libcairo2-dev libjpeg-dev libpango1.0-dev libgif-dev buil
 # Restore NPM packages
 WORKDIR /home/site/wwwroot/GraphToPng
 RUN npm install
+
+# Restore working directory
+WORKDIR /home/site/wwwroot
